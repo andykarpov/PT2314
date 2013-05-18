@@ -148,19 +148,19 @@ void PT2314::updateVolume() {
 }
 
 void PT2314::updateAttenuation() {
-	unsigned int aL = map(_attenuationL, 0, 100, 0b00000111, 0b00000000);
-	unsigned int aR = map(_attenuationR, 0, 100, 0b00000111, 0b00000000);
+	unsigned int aL = map(_attenuationL, 0, 100, 0b00011111, 0b00000000);
+	unsigned int aR = map(_attenuationR, 0, 100, 0b00011111, 0b00000000);
 	if (_mute) {
-		writeI2CChar(0xDF);      
-		writeI2CChar(0xFF);
+		writeI2CChar(0b11011111); 
+		writeI2CChar(0b11111111);
 	} else {
-		writeI2CChar(0xC0 | aL);
-		writeI2CChar(0xE0 | aR);
+		writeI2CChar(0b11000000 | aL);
+		writeI2CChar(0b11100000 | aR);
 	}
 }
 
 void PT2314::updateAudioSwitch() {
-	int audioByte = 0x58;
+	int audioByte = 0b01000000; // audio switch + gain +11.25dB.
 	if (_loudness){
 		audioByte |= 0x00;
 	} else {
