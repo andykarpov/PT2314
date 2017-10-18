@@ -160,7 +160,7 @@ void PT2314::updateAttenuation() {
 	}
 }
 
-void gain(int v) {
+void PT2314::gain(int v) {
 	// v=0 means no gain, 1=+3.75dB, 2=+7.5dB, 3=+11.25dB
 	v = constrain(v, 0, 3);
 	// gain byte, 0b00011000 = no gain, 0b00010000 = +3.75dB, 0b00001000 = +7.5dB, 0b00000000 = +11.25dB
