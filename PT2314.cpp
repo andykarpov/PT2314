@@ -165,6 +165,7 @@ void PT2314::gain(int v) {
 	v = constrain(v, 0, 3);
 	// gain byte, 0b00011000 = no gain, 0b00010000 = +3.75dB, 0b00001000 = +7.5dB, 0b00000000 = +11.25dB
 	_gain = ((3 - v) << 3);
+	updateAudioSwitch();
 }
 
 void PT2314::updateAudioSwitch() {
