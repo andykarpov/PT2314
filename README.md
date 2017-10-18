@@ -6,7 +6,9 @@ andykarpov made a default gain of 11.25dB which made the sound on my speakers cl
 so I changed the default values and added the variable _gain and the method gain() with which
 you can set the desired gain from 0 to 3, which corresponds to 0dB, +3.75dB, +7.5dB and +11.25dB.
 
-Example:
+See examples folder!
+
+Example usage:
 
 PT2314 audioswitch;
 setup() {
