@@ -48,15 +48,15 @@ private:
 	int volume_to_pt2314(int vol);
 	int eq_to_pt2314(int val);
     int writeI2CChar(unsigned char c);
-	void updateVolume();
-	void updateAttenuation();
-	void updateAudioSwitch();
-	void updateBass();
-	void updateTreble();
-	void updateAll();
+    bool updateVolume();
+	bool updateAttenuation();
+	bool updateAudioSwitch();
+	bool updateBass();
+	bool updateTreble();
+	bool updateAll();
     
 public:
-    int init(void); 
+    bool init(void);
     void muteOn(void); 
     void muteOff(void); 
     void volume(int v);
