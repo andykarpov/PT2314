@@ -84,7 +84,8 @@ bool PT2314::init(void) {
 	_attenuationL = 100;
 	_attenuationR = 100;
 	_mute = false;
-	_loudness = true;
+	_loudness = false;
+	_gain = 0;
 	_channel = 0;
 	_bass = 50;
 	_treble = 50;
@@ -171,9 +172,20 @@ bool PT2314::updateAttenuation() {
 	return true;
 }
 
+void PT2314::gain(int v) {
+	// v=0 means no gain, 1=+3.75dB, 2=+7.5dB, 3=+11.25dB
+	v = constrain(v, 0, 3);
+	// gain byte, 0b00011000 = no gain, 0b00010000 = +3.75dB, 0b00001000 = +7.5dB, 0b00000000 = +11.25dB
+	_gain = ((3 - v) << 3);
+	updateAudioSwitch();
+}
+
 bool PT2314::updateAudioSwitch() {
 	int audioByte = 0b01000000; // audio switch + gain +11.25dB.
-	if (_loudness){
+	// gain byte, 0b00011000 = no gain, 0b00010000 = +3.75dB, 0b00001000 = +7.5dB, 0b00000000 = +11.25dB
+	audioByte |= _gain;
+
+  if (_loudness){
 		audioByte |= 0x00;
 	} else {
 		audioByte |= 0x04;

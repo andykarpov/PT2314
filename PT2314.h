@@ -42,13 +42,14 @@ private:
 	int _attenuationR;
 	bool _mute;
 	bool _loudness;
+	uint8_t _gain;
 	int _channel;
 	int _bass;
 	int _treble;
 	int volume_to_pt2314(int vol);
 	int eq_to_pt2314(int val);
-    int writeI2CChar(unsigned char c);
-    bool updateVolume();
+  int writeI2CChar(unsigned char c);
+  bool updateVolume();
 	bool updateAttenuation();
 	bool updateAudioSwitch();
 	bool updateBass();
@@ -63,10 +64,10 @@ public:
 	void channel(int ch);
 	void loudnessOn();
 	void loudnessOff();
+	void gain(int v);
 	void attenuation(int l, int r); 
     void bass(int b); 
     void treble(int t);
 };
 
 #endif
-
