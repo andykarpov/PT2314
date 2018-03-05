@@ -79,7 +79,7 @@ int PT2314::writeI2CChar(unsigned char c) {
 } 
 
 // initialize PT2314
-int PT2314::init(void) {
+bool PT2314::init(void) {
 	_volume = 0;
 	_attenuationL = 100;
 	_attenuationR = 100;
@@ -90,9 +90,7 @@ int PT2314::init(void) {
 	_bass = 50;
 	_treble = 50;
 
-	updateAll();
-	
-	return 1;
+	return updateAll();
 }
 
 void PT2314::volume(int v) {
@@ -143,21 +141,35 @@ void PT2314::treble(int t) {
 	updateTreble();
 }
 
-void PT2314::updateVolume() {
+bool PT2314::updateVolume() {
 	unsigned int val = volume_to_pt2314(_volume);
-	writeI2CChar(val);
+	return (writeI2CChar(val) == 0) ? true : false;
 }
 
-void PT2314::updateAttenuation() {
+bool PT2314::updateAttenuation() {
 	unsigned int aL = map(_attenuationL, 0, 100, 0b00011111, 0b00000000);
 	unsigned int aR = map(_attenuationR, 0, 100, 0b00011111, 0b00000000);
 	if (_mute) {
-		writeI2CChar(0b11011111); 
-		writeI2CChar(0b11111111);
+		if(writeI2CChar(0b11011111) != 0)
+		{
+			return false;
+		}
+		if(writeI2CChar(0b11111111) != 0)
+		{
+			return false;
+		}
 	} else {
-		writeI2CChar(0b11000000 | aL);
-		writeI2CChar(0b11100000 | aR);
+		if(writeI2CChar(0b11000000 | aL) != 0)
+		{
+			return false;
+		}
+		if(writeI2CChar(0b11100000 | aR) != 0)
+		{
+			return false;
+		}
 	}
+
+	return true;
 }
 
 void PT2314::gain(int v) {
@@ -168,33 +180,50 @@ void PT2314::gain(int v) {
 	updateAudioSwitch();
 }
 
-void PT2314::updateAudioSwitch() {
-	int audioByte = 0b01000000;
+bool PT2314::updateAudioSwitch() {
+	int audioByte = 0b01000000; // audio switch + gain +11.25dB.
 	// gain byte, 0b00011000 = no gain, 0b00010000 = +3.75dB, 0b00001000 = +7.5dB, 0b00000000 = +11.25dB
 	audioByte |= _gain;
-	if (_loudness){
+
+  if (_loudness){
 		audioByte |= 0x00;
 	} else {
 		audioByte |= 0x04;
 	}
 	audioByte |= _channel;
-	writeI2CChar(audioByte);
+	return (writeI2CChar(audioByte) == 0) ? true : false;
 }
 
-void PT2314::updateBass() {
+bool PT2314::updateBass() {
 	unsigned int val = eq_to_pt2314(map(_bass, 0, 100, 0, 28));
-	writeI2CChar(0x60 | val);
+	return (writeI2CChar(0x60 | val) == 0)? true : false;
 }
 
-void PT2314::updateTreble() {
+bool PT2314::updateTreble() {
 	unsigned int val = eq_to_pt2314(map(_treble, 0, 100, 0, 28));
-	writeI2CChar(0x70 | val);
+	return (writeI2CChar(0x70 | val) == 0) ? true : false;
 }
 
-void PT2314::updateAll() {
-	updateVolume();
-	updateAttenuation();
-	updateAudioSwitch();
-	updateBass();
-	updateTreble();
+bool PT2314::updateAll() {
+	if(updateVolume() == false)
+	{
+		return false;
+	}
+
+	if(updateAttenuation() == false)
+	{
+		return false;
+	}
+
+	if(updateAudioSwitch() == false)
+	{
+		return false;
+	}
+
+	if(updateBass() == false)
+	{
+		return false;
+	}
+
+	return updateTreble();
 }
