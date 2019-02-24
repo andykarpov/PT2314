@@ -1,7 +1,7 @@
-/* Arduino PT2322 Library
- * Copyright (C) 2009 by oddWires
+/* Arduino PT2314 Library
+ * Copyright (C) 2013 by Andy Karpov <andy.karpov@gmail.com>
  *
- * This file is part of the Arduino PT2322 Library
+ * This file is part of the Arduino PT2314 Library
  *
  * This Library is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
